@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SheetSense AI - Excel Assistant</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Floating Particles -->
+    <div class="particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>🧠 SheetSense AI</h1>
+            <p>Your intelligent Excel assistant powered by Azure OpenAI</p>
+            <div class="header-badge">✨ Azure Codeathon 2025 ✨</div>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-button active" onclick="showTab('formula-gen', this)">Formula Generator</button>
+            <button class="tab-button" onclick="showTab('data-query', this)">Data Query</button>
+            <button class="tab-button" onclick="showTab('insights', this)">Auto Insights</button>
+            <button class="tab-button" onclick="showTab('explain', this)">Formula Explainer</button>
+        </div>
+
+        <!-- Formula Generator Tab -->
+        <div id="formula-gen" class="tab-content active">
+            <h2>🔧 Formula Generator</h2>
+            <p>Describe what you want in plain English, get an Excel formula</p>
+            
+            <div class="suggestions-section">
+                <h4>💡 Not sure what to ask? Try these examples:</h4>
+                <div class="suggestion-chips">
+                    <button class="suggestion-chip" onclick="fillSuggestion('Calculate commission: 5% for sales over $10,000, 3% otherwise')">Commission Calculator</button>
+                    <button class="suggestion-chip" onclick="fillSuggestion('Find the average of values in column A, but ignore zeros')">Smart Average</button>
+                    <button class="suggestion-chip" onclick="fillSuggestion('If profit margin is above 20%, mark as High, between 10-20% as Medium, below 10% as Low')">Profit Categories</button>
+                    <button class="suggestion-chip" onclick="fillSuggestion('Calculate compound annual growth rate between start and end values')">Growth Rate</button>
+                    <button class="suggestion-chip" onclick="fillSuggestion('Count how many sales happened in the last 30 days')">Recent Sales Count</button>
+                </div>
+            </div>
+            
+            <div class="input-section">
+                <textarea id="formula-request" placeholder="Describe what you want to calculate in plain English..."></textarea>
+                <button onclick="generateFormula()" class="primary-btn">Generate Formula</button>
+            </div>
+            
+            <div id="formula-result" class="result-section" style="display: none;">
+                <h3>Generated Formula:</h3>
+                <div class="formula-box">
+                    <code id="formula-code"></code>
+                    <button onclick="copyFormula()" class="copy-btn">Copy</button>
+                </div>
+                <div class="explanation">
+                    <h4>Explanation:</h4>
+                    <p id="formula-explanation"></p>
+                </div>
+                <div class="example">
+                    <h4>Example:</h4>
+                    <p id="formula-example"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Query Tab -->
+        <div id="data-query" class="tab-content">
+            <h2>📊 Data Query</h2>
+            <p>Upload Excel file and ask questions about your data</p>
+            
+            <div class="upload-section">
+                <input type="file" id="query-file" accept=".xlsx,.xls" onchange="handleFileUpload('query')">
+                <label for="query-file" class="file-label">
+                    📁 Choose Excel File or Drag & Drop Here
+                </label>
+                <button id="smart-suggestions-btn" onclick="getSmartSuggestions()" class="secondary-btn" style="display: none; margin-top: 10px;">
+                    🧠 Get Smart Suggestions for This Data
+                </button>
+            </div>
+            
+            <div id="smart-suggestions" class="suggestions-section" style="display: none;">
+                <h4>🎯 Suggested questions for your data:</h4>
+                <div id="smart-suggestion-chips" class="suggestion-chips">
+                    <!-- Dynamic suggestions will appear here -->
+                </div>
+            </div>
+            
+            <div class="suggestions-section">
+                <h4>💡 Common questions financial analysts ask:</h4>
+                <div class="suggestion-chips">
+                    <button class="suggestion-chip" onclick="fillDataQuestion('What are the top 5 products by revenue?')">Top Performers</button>
+                    <button class="suggestion-chip" onclick="fillDataQuestion('Show me monthly revenue trends')">Revenue Trends</button>
+                    <button class="suggestion-chip" onclick="fillDataQuestion('Which sales rep has the highest conversion rate?')">Best Rep</button>
+                    <button class="suggestion-chip" onclick="fillDataQuestion('What is the average deal size by region?')">Regional Analysis</button>
+                    <button class="suggestion-chip" onclick="fillDataQuestion('How many deals are above/below target?')">Target Analysis</button>
+                </div>
+            </div>
+            
+            <div class="input-section">
+                <textarea id="data-question" placeholder="Ask any question about your data..."></textarea>
+                <button onclick="queryData()" class="primary-btn">Ask Question</button>
+            </div>
+            
+            <div id="query-result" class="result-section" style="display: none;">
+                <h3>Answer:</h3>
+                <div class="answer-box">
+                    <p id="query-answer"></p>
+                </div>
+                <div class="details">
+                    <h4>Details:</h4>
+                    <p id="query-details"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Auto Insights Tab -->
+        <div id="insights" class="tab-content">
+            <h2>💡 Auto Insights</h2>
+            <p>Upload Excel file to get automatic data insights</p>
+            
+            <div class="upload-section">
+                <input type="file" id="insights-file" accept=".xlsx,.xls" onchange="handleFileUpload('insights')">
+                <label for="insights-file" class="file-label">
+                    📁 Choose Excel File or Drag & Drop Here
+                </label>
+            </div>
+            
+            <button onclick="generateInsights()" class="primary-btn">Generate Insights</button>
+            
+            <div id="insights-result" class="result-section" style="display: none;">
+                <div class="insights-grid">
+                    <div class="insight-card">
+                        <h3>🔍 Key Insights</h3>
+                        <ul id="insights-list"></ul>
+                    </div>
+                    <div class="insight-card">
+                        <h3>📈 Trends</h3>
+                        <ul id="trends-list"></ul>
+                    </div>
+                    <div class="insight-card">
+                        <h3>💡 Recommendations</h3>
+                        <ul id="recommendations-list"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Formula Explainer Tab -->
+        <div id="explain" class="tab-content">
+            <h2>🎓 Formula Explainer</h2>
+            <p>Paste an Excel formula to understand what it does</p>
+            
+            <div class="input-section">
+                <textarea id="formula-input" placeholder="Example: =IF(AND(A2>1000,B2<0.1),A2*0.05,A2*0.03)"></textarea>
+                <button onclick="explainFormula()" class="primary-btn">Explain Formula</button>
+            </div>
+            
+            <div id="explain-result" class="result-section" style="display: none;">
+                <h3>Summary:</h3>
+                <div class="summary-box">
+                    <p id="explain-summary"></p>
+                </div>
+                <div class="explanation">
+                    <h4>Detailed Explanation:</h4>
+                    <p id="explain-details"></p>
+                </div>
+                <div class="example">
+                    <h4>Example:</h4>
+                    <p id="explain-example"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Spinner -->
+        <div id="loading" class="loading" style="display: none;">
+            <div class="spinner"></div>
+            <p>Processing with Azure AI...</p>
+        </div>
+
+        <!-- Error Message -->
+        <div id="error-message" class="error-message" style="display: none;">
+            <p id="error-text"></p>
+            <button onclick="hideError()">×</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

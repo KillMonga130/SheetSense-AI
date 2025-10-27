@@ -1,0 +1,25 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "app.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "app.py"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "app.py"
+    }
+  ],
+  "env": {
+    "AZURE_OPENAI_ENDPOINT": "https://your-resource.cognitiveservices.azure.com/",
+    "AZURE_OPENAI_KEY": "your-api-key-here",
+    "AZURE_OPENAI_DEPLOYMENT": "gpt-35-turbo",
+    "AZURE_OPENAI_API_VERSION": "2024-12-01-preview"
+  }
+}
